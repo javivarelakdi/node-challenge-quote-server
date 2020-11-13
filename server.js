@@ -18,16 +18,24 @@ app.get("/", function (request, response) {
 
 
 //START OF YOUR CODE...
+
+app.get("/search", (request, response) => {
+  const searchQuery = request.query.term;
+  // https://stackoverflow.com/questions/44312924/filter-array-of-objects-whose-any-properties-contains-a-value
+  const filterByValue = (array, string) => {
+    return array.filter(o =>
+        Object.keys(o).some(k => o[k].toLowerCase().includes(string.toLowerCase())));
+  }
+  response.send(filterByValue(quotes, searchQuery));
+});
+
 app.get('/quotes/random', function(request, response) {
   response.send(pickFromArray(quotes))
 });
 
-//START OF YOUR CODE...
 app.get('/quotes', function(request, response) {
   response.send(quotes)
 });
-
-
 
 //...END OF YOUR CODE
 
@@ -39,7 +47,7 @@ function pickFromArray(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-//Start our server so that it listens for HTTP requests!
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+const port = 3000;
+app.listen(port, function () {
+  console.log(`Server is listening on port ${port}. Ready to accept requests!`);
 });
